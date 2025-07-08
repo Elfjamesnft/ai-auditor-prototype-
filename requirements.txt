@@ -1,2 +1,6 @@
 pandas
+matplotlib
 fpdf
+streamlit
+openpyxl
+PyYAML
