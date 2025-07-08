@@ -1,98 +1,129 @@
-# AI Auditor Prototype
+# 🧠 TrustAudit AI – Prototype
 
-🚀 **AI-Powered Internal & External Audit Assistant**
-
-This project demonstrates an AI audit agent that:
-
-✅ Automatically analyzes company transaction data  
-✅ Flags high-risk or suspicious transactions  
-✅ Generates professional PDF audit reports  
+TrustAudit AI is an intelligent audit automation tool that mimics a Chartered Accountant’s mindset. It helps firms and companies quickly identify high-risk transactions, enforce compliance, and generate professional reports with minimal manual work.
 
 ---
 
-## ✨ Features
+## 🎯 Key Features
 
-- **Automated Data Analysis** using Python and Pandas
-- **Rule-Based Flagging** for suspicious activity
-- **PDF Report Generation** for clear documentation
-- **Ready for Integration** with larger accounting systems
+✅ **Risk & Error Detection**
+- Configurable thresholds (e.g., flag amounts > $10,000)
+- Statistical outlier detection
+- Weekend & holiday transaction flags
+- Duplicate transaction detection
+- Suspicious vendor detection
+- Automated risk scoring (0–100)
+
+✅ **Audit Trail & Transparency**
+- Full audit logs with timestamps
+- Reproducible workflows
+
+✅ **Professional Reporting**
+- PDF reports with cover page, summaries, and detailed tables
+- Monthly spending trend charts
+- Excel exports
+- Ready-to-send email delivery
+
+✅ **Configurable Rules**
+- Easily modify thresholds and criteria in `config.yaml`
 
 ---
 
 ## 📂 Project Structure
 
-├── auditor.py # Audit engine
-├── generate_report.py # Report generator
-├── requirements.txt # Python dependencies
+├── auditor.py # Main analysis engine
+├── generate_report.py # PDF & Excel report generator
+├── send_email.py # Email automation script
+├── config.yaml # All configurable audit rules
 ├── data/
-│ └── sample_transactions.csv
+│ └── sample_transactions.csv # Sample input data
 ├── reports/
-│ └── audit_report.pdf
+│ ├── audit_report.pdf
+│ ├── audit_report.xlsx
+│ ├── spending_trend.png
+│ ├── flagged_transactions.csv
+│ └── audit_trail.log
+└── README.md
+
 
 ---
 
-## 🚀 How to Run
+## ⚙️ Quick Start
 
-1️⃣ Install dependencies:
+1️⃣ Install Requirements
 
 ```bash
 pip install -r requirements.txt
+(If needed, also install matplotlib and yagmail)
+pip install matplotlib yagmail
 
-2️⃣ Run the auditor:
 
-bash
+2️⃣ Analyze Transactions
 python auditor.py
-3️⃣ Generate the PDF report:
 
-bash
+✅ Outputs:
+
+reports/flagged_transactions.csv
+
+reports/audit_trail.log
+
+3️⃣ Generate Reports
 python generate_report.py
 
-💡 Next Steps
-Integrate advanced AI/ML models for anomaly detection
+✅ Outputs:
 
-Build a web dashboard
+reports/audit_report.pdf
 
-Enable real-time data ingestion from ERP systems
+reports/audit_report.xlsx
 
-🧑‍💼 Author
-Asim Shaikh
-https://github.com/Elfjamesnft
+reports/spending_trend.png
+
+4️⃣ Email Reports
+Edit send_email.py with your credentials:
+send_report_email(
+    sender_email="your_email@gmail.com",
+    app_password="your_app_password",
+    recipient_email="client@example.com",
+    attachments=["reports/audit_report.pdf", "reports/audit_report.xlsx"]
+)
+Run:
+python send_email.py
+
+📝 Configuration
+Edit config.yaml to change rules:
+amount_threshold: 10000
+outlier_std_dev: 2
+flag_weekends: true
+suspicious_vendors:
+  - VendorX
+  - VendorY
+
+
+💡 Why Use AI Auditor?
+
+Speed: Reduce audit time from weeks to hours
+
+Consistency: No manual error or oversight
+
+Transparency: Clear logs and justifications
+
+Professionalism: Investor- and client-ready reports
+
+🚀 Roadmap
+
+ Web dashboard
+
+ Multi-user authentication
+
+ Interactive review & comments
+
+ More compliance standards
+
+🧑‍💻 Author
+Elf James aka Asim Shaikh
+Prototype maintained by TrustAudit AI
 
 📄 License
 MIT License
-
----
-
-# 🟢 How to Update README
-
-**Option 1: Edit on GitHub**
-1. Go to your repository.
-2. Click `README.md`.
-3. Click the pencil (✏️) icon to edit.
-4. Paste the new content.
-5. Click **Commit changes**.
-
-**Option 2: Edit locally**
-1. Open `README.md` in Notepad.
-2. Replace everything with the content above.
-3. Save the file.
-4. In Command Prompt:
-
-git add README.md
-git commit -m "Update README with project description"
-git push
-
----
-
-🎯 **Please confirm:**
-✅ You see all your files on GitHub.
-✅ You’re ready to update the README.
-
-If you’d like, I’ll help you:
-- Add badges (Python version, license)
-- Polish the description further
-- Guide you to create a project page or investor presentation
-
-**Just say the word!**
 
 
