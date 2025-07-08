@@ -1,5 +1,4 @@
 from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
 from reportlab.platypus import (
     SimpleDocTemplate,
     Paragraph,
@@ -13,14 +12,9 @@ from reportlab.lib.styles import getSampleStyleSheet
 import pandas as pd
 import datetime
 
-def generate_audit_report(datafile, outputfile="reports/audit_report.pdf"):
+def generate_audit_report(datafile="reports/flagged_transactions.csv", outputfile="reports/audit_report.pdf"):
     df = pd.read_csv(datafile)
 
-    # Calculate summary stats
-    total_transactions = len(df)
-    total_flagged = len(df[df["Flag"] == "Yes"])
-
-    # Prepare the document
     doc = SimpleDocTemplate(outputfile, pagesize=A4)
     styles = getSampleStyleSheet()
     elements = []
@@ -38,40 +32,39 @@ def generate_audit_report(datafile, outputfile="reports/audit_report.pdf"):
     summary_title = Paragraph("<b>Summary of Findings</b>", styles["Heading2"])
     summary_text = f"""
     <br/>
-    - Total transactions reviewed: {total_transactions}<br/>
-    - Total flagged transactions: {total_flagged}<br/>
-    - Flagging criteria:<br/>
-        • Amounts > $10,000<br/>
+    - Total flagged transactions: {len(df)}<br/>
+    - Risk Scores range: {df['RiskScore'].min()}–{df['RiskScore'].max()}<br/>
+    - Flagging criteria included:<br/>
+        • Amount threshold<br/>
+        • Statistical outliers<br/>
+        • Weekend transactions<br/>
         • Suspicious vendors<br/>
-        • Duplicate entries<br/>
+        • Duplicates<br/>
     """
     summary_paragraph = Paragraph(summary_text, styles["Normal"])
     recommendations = Paragraph(
-        "Recommendations:<br/>Please review flagged transactions and take appropriate action.",
+        "Recommendations:<br/>Please review all flagged transactions carefully.",
         styles["Normal"]
     )
 
-    elements.extend([summary_title, Spacer(1, 12), summary_paragraph, Spacer(1, 12), recommendations, PageBreak()])
+    elements.extend([summary_title, Spacer(1,12), summary_paragraph, Spacer(1,12), recommendations, PageBreak()])
 
-    # Detailed Table of flagged transactions
+    # Detailed Table
     detail_title = Paragraph("<b>Detailed Flagged Transactions</b>", styles["Heading2"])
     elements.append(detail_title)
-    elements.append(Spacer(1, 12))
+    elements.append(Spacer(1,12))
 
-    # Prepare table data
-    table_data = [["Date", "Description", "Amount ($)", "Notes"]]
-    flagged = df[df["Flag"] == "Yes"]
-
-    for _, row in flagged.iterrows():
+    table_data = [["Date", "Description", "Amount ($)", "Notes", "Risk Score"]]
+    for _, row in df.iterrows():
         table_data.append([
             row["Date"],
             row["Description"],
             f"{row['Amount']:,.2f}",
-            row["Notes"]
+            row["Notes"],
+            str(row["RiskScore"])
         ])
 
-    # Style the table
-    table = Table(table_data, colWidths=[80, 200, 80, 130])
+    table = Table(table_data, colWidths=[70, 150, 70, 150, 50])
     table.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#1e2a38")),
         ('TEXTCOLOR', (0,0), (-1,0), colors.white),
@@ -83,8 +76,9 @@ def generate_audit_report(datafile, outputfile="reports/audit_report.pdf"):
 
     elements.append(table)
 
-    # Build PDF
     doc.build(elements, onFirstPage=add_footer, onLaterPages=add_footer)
+
+    print("✅ PDF report generated.")
 
 def add_footer(canvas_obj, doc):
     page_num = canvas_obj.getPageNumber()
@@ -93,5 +87,12 @@ def add_footer(canvas_obj, doc):
     canvas_obj.setFillColor(colors.grey)
     canvas_obj.drawString(40, 20, text)
 
+def export_excel_report(datafile="reports/flagged_transactions.csv", outputfile="reports/audit_report.xlsx"):
+    df = pd.read_csv(datafile)
+    with pd.ExcelWriter(outputfile) as writer:
+        df.to_excel(writer, index=False, sheet_name="Flagged Transactions")
+    print("✅ Excel report generated.")
+
 if __name__ == "__main__":
-    generate_audit_report("data/sample_transactions.csv")
+    generate_audit_report()
+    export_excel_report()
