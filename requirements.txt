@@ -4,3 +4,4 @@ fpdf
 streamlit
 openpyxl
 PyYAML
+reportlab
