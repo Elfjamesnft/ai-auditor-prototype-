@@ -1,2 +1,7 @@
-amount_threshold: 10000
-outlier_std_dev: 2
+# Thresholds and rules for audit checks
+amount_threshold: 10000        # Flag transactions above this amount
+outlier_std_dev: 2             # Standard deviations for outlier detection
+flag_weekends: true            # Flag transactions on weekends
+suspicious_vendors:
+  - VendorX
+  - VendorY
